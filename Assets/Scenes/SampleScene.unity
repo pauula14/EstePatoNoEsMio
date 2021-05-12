@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 7813919}
   m_Layer: 0
   m_Name: Sphere
-  m_TagString: Goal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2567,7 +2567,7 @@ GameObject:
   - component: {fileID: 986515615}
   m_Layer: 0
   m_Name: CuteDuck
-  m_TagString: Untagged
+  m_TagString: Goal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2704,6 +2704,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cdeb0e70eb61f940946e0bbbca5a365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  randomXpos: 0
+  randomZpos: 0
+  cuteDuck: {fileID: 986515609}
   viewRadius: 8.1
   viewAngle: 35
   meshResolution: 1

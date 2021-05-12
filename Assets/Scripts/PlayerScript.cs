@@ -15,10 +15,10 @@ public class PlayerScript : MonoBehaviour
     {
 
         //aquí se añadiria el codigo dinamico para obtener según el tag o nombre la meta (horda o madre)
-        goalDestination = GameObject.FindGameObjectWithTag("Goal"); //en lugar de goal mother y como denominemos las hordas
+        //goalDestination = GameObject.FindGameObjectWithTag("Goal"); //en lugar de goal mother y como denominemos las hordas
 
         //aqui se pone al agente el destino seleccionado
-        navMeshAgent.destination = goalDestination.transform.position; //Esto en el start solo vale si la meta NO se mueve
+        //navMeshAgent.destination = goalDestination.transform.position; //Esto en el start solo vale si la meta NO se mueve
     }
 
 
@@ -38,5 +38,8 @@ public class PlayerScript : MonoBehaviour
                 navMeshAgent.destination = hit.point;
             }
         }*/
+
+        goalDestination = GameObject.FindGameObjectWithTag("Goal");
+        navMeshAgent.destination = goalDestination.transform.position;
     }
 }

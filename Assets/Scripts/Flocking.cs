@@ -5,6 +5,9 @@ using UnityEngine;
 public class Flocking : MonoBehaviour
 {
 
+    public Material rosa;
+    public Material blanco;
+
     public FlockingAgent agentPrefab;
     List<FlockingAgent> agents = new List<FlockingAgent>();
     public FlockingBehaviour behaviour;
@@ -53,6 +56,40 @@ public class Flocking : MonoBehaviour
 
     void Update()
     {
-        
+
+        foreach(FlockingAgent agent in agents)
+        {
+            List<Transform> context = GetNearbyObjects(agent);
+            ///DEMO //agent.GetComponentInChildren<SpriteRenderer>().color = Color.Lerp(Color.white, Color.red, context.Count / 6f);
+            //agent.GetComponent<CapsuleCollider>().Material = Material
+
+            Vector3 move = new Vector3(behaviour.CalculateMove(agent, context, this).x, 0f, behaviour.CalculateMove(agent, context, this).y);
+            move *= driveFactor;
+
+            if(move.sqrMagnitude > squareMaxSpeed)
+            {
+                move = move.normalized * maxSpeed;
+            }
+
+            agent.Move(move);
+
+        }
+    
+    }
+
+    List<Transform> GetNearbyObjects(FlockingAgent agent)
+    {
+        List<Transform> context = new List<Transform>();
+        Collider[] contextColliders = Physics.OverlapSphere(agent.transform.position, neighborsRadius);
+
+        foreach (Collider col in contextColliders)
+        {
+            if (col != agent.AgentCollider)
+            {
+                context.Add(col.transform);
+            }
+        }
+
+        return context;
     }
 }

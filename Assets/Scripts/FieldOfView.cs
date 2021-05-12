@@ -1,13 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class FieldOfView : MonoBehaviour
 {
+    //prueba
+    public float randomXpos = 0;
+    public float randomZpos = 0;
+    public UnityEngine.AI.NavMeshAgent cuteDuck;
 
     public float viewRadius;
 
-    [Range(0, 120)]
+    [Range(0, 160)]
     public float viewAngle;
 
     public float meshResolution; //Va a buscar los obtsaculos, habra que hacer uno de la mama
@@ -43,6 +48,15 @@ public class FieldOfView : MonoBehaviour
         }
     }*/
 
+    //prueba
+    void SetTarget()
+    {
+        randomXpos = Random.Range(50, -40);
+        randomZpos = Random.Range(50, -40);
+
+        cuteDuck.SetDestination(new Vector3(randomXpos, cuteDuck.transform.position.y, randomZpos));
+    }
+
     //Detecta los obtaculos y pinta la vista, hacer para la mdre y en lugar de para obstaculos usar este para las hordas (detectaria a cada patete de la horda)
     public void DrawFieldOfView()
     {
@@ -68,6 +82,7 @@ public class FieldOfView : MonoBehaviour
                 { 
                     //Aqui detecta los obstaculos
                     Debug.Log("obstaculo");
+                    //SetTarget();
                 }
             }
         }
