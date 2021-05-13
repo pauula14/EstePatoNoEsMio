@@ -7,7 +7,8 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] private float FOVAngle;
     [SerializeField] private float smoothDamp;
     [SerializeField] private LayerMask obstacleMask;
-    [SerializeField] private Vector3[] directionsToCheckWhenAvoidingObstacles;
+    [SerializeField] private Vector3[] directionsToCheckWhenAvoidingObstacles; //Direcciones que compruba cuando se choca probablmente no haga falta
+
 
     private List<FlockUnit> cohesionNeighbours = new List<FlockUnit>();
     private List<FlockUnit> avoidanceNeighbours = new List<FlockUnit>();
@@ -65,21 +66,23 @@ public class FlockUnit : MonoBehaviour
         var allUnits = assignedFlock.allUnits;
         for (int i = 0; i < allUnits.Length; i++)
         {
-            var currentUnit = allUnits[i];
-            if (currentUnit != this)
+            var currentAgent = allUnits[i];
+
+            if (currentAgent != this)
             {
-                float currentNeighbourDistanceSqr = Vector3.SqrMagnitude(currentUnit.myTransform.position - myTransform.position);
-                if (currentNeighbourDistanceSqr <= assignedFlock.cohesionDistance * assignedFlock.cohesionDistance)
+                float currentNeighbourDistanceSqr = Vector3.SqrMagnitude(currentAgent.myTransform.position - myTransform.position);
+
+                if (currentNeighbourDistanceSqr <= assignedFlock.CohesionDistance * assignedFlock.CohesionDistance)
                 {
-                    cohesionNeighbours.Add(currentUnit);
+                    cohesionNeighbours.Add(currentAgent);
                 }
-                if (currentNeighbourDistanceSqr <= assignedFlock.avoidanceDistance * assignedFlock.avoidanceDistance)
+                if (currentNeighbourDistanceSqr <= assignedFlock.AvoidanceDistance * assignedFlock.AvoidanceDistance)
                 {
-                    avoidanceNeighbours.Add(currentUnit);
+                    avoidanceNeighbours.Add(currentAgent);
                 }
-                if (currentNeighbourDistanceSqr <= assignedFlock.aligementDistance * assignedFlock.aligementDistance)
+                if (currentNeighbourDistanceSqr <= assignedFlock.AligementDistance * assignedFlock.AligementDistance)
                 {
-                    aligementNeighbours.Add(currentUnit);
+                    aligementNeighbours.Add(currentAgent);
                 }
             }
         }
@@ -88,15 +91,19 @@ public class FlockUnit : MonoBehaviour
     private void CalculateSpeed()
     {
         if (cohesionNeighbours.Count == 0)
+        {
             return;
+        }
+            
         speed = 0;
+
         for (int i = 0; i < cohesionNeighbours.Count; i++)
         {
             speed += cohesionNeighbours[i].speed;
         }
 
-        speed /= cohesionNeighbours.Count;
-        speed = Mathf.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
+        speed /= cohesionNeighbours.Count; //Se normaliza la velocidad
+        speed = Mathf.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed); //Comprueba que la velocidad esté dentro dle rango
     }
 
     private Vector3 CalculateCohesionVector()
@@ -117,7 +124,7 @@ public class FlockUnit : MonoBehaviour
         cohesionVector /= neighboursInFOV;
         cohesionVector -= myTransform.position;
         cohesionVector = cohesionVector.normalized;
-        return cohesionVector;
+        return new Vector3(cohesionVector.x, 0, cohesionVector.z);
     }
 
     private Vector3 CalculateAligementVector()
@@ -137,7 +144,7 @@ public class FlockUnit : MonoBehaviour
 
         aligementVector /= neighboursInFOV;
         aligementVector = aligementVector.normalized;
-        return aligementVector;
+        return new Vector3(aligementVector.x, 0, aligementVector.z);
     }
 
     private Vector3 CalculateAvoidanceVector()
@@ -157,13 +164,14 @@ public class FlockUnit : MonoBehaviour
 
         avoidanceVector /= neighboursInFOV;
         avoidanceVector = avoidanceVector.normalized;
-        return avoidanceVector;
+        return new Vector3(avoidanceVector.x, 0, avoidanceVector.z);
     }
 
-    private Vector3 CalculateBoundsVector()
+    //Si un agente está fuera el radio de acción, lo lleva dentro
+    private Vector3 CalculateBoundsVector() 
     {
         var offsetToCenter = assignedFlock.transform.position - myTransform.position;
-        bool isNearCenter = (offsetToCenter.magnitude >= assignedFlock.boundsDistance * 0.9f);
+        bool isNearCenter = (offsetToCenter.magnitude >= assignedFlock.BoundsDistance * 0.9f);
         return isNearCenter ? offsetToCenter.normalized : Vector3.zero;
     }
 
@@ -171,7 +179,7 @@ public class FlockUnit : MonoBehaviour
     {
         var obstacleVector = Vector3.zero;
         RaycastHit hit;
-        if (Physics.Raycast(myTransform.position, myTransform.forward, out hit, assignedFlock.obstacleDistance, obstacleMask))
+        if (Physics.Raycast(myTransform.position, myTransform.forward, out hit, assignedFlock.ObstacleDistance, obstacleMask))
         {
             obstacleVector = FindBestDirectionToAvoidObstacle();
         }
@@ -179,7 +187,7 @@ public class FlockUnit : MonoBehaviour
         {
             currentObstacleAvoidanceVector = Vector3.zero;
         }
-        return obstacleVector;
+        return new Vector3(obstacleVector.x, 0, obstacleVector.z);
     }
 
     private Vector3 FindBestDirectionToAvoidObstacle()
@@ -187,23 +195,25 @@ public class FlockUnit : MonoBehaviour
         if (currentObstacleAvoidanceVector != Vector3.zero)
         {
             RaycastHit hit;
-            if (!Physics.Raycast(myTransform.position, myTransform.forward, out hit, assignedFlock.obstacleDistance, obstacleMask))
+            if (!Physics.Raycast(myTransform.position, myTransform.forward, out hit, assignedFlock.ObstacleDistance, obstacleMask))
             {
                 return currentObstacleAvoidanceVector;
             }
         }
+
         float maxDistance = int.MinValue;
         var selectedDirection = Vector3.zero;
+
         for (int i = 0; i < directionsToCheckWhenAvoidingObstacles.Length; i++)
         {
 
             RaycastHit hit;
             var currentDirection = myTransform.TransformDirection(directionsToCheckWhenAvoidingObstacles[i].normalized);
-            if (Physics.Raycast(myTransform.position, currentDirection, out hit, assignedFlock.obstacleDistance, obstacleMask))
+            if (Physics.Raycast(myTransform.position, currentDirection, out hit, assignedFlock.ObstacleDistance, obstacleMask))
             {
 
                 float currentDistance = (hit.point - myTransform.position).sqrMagnitude;
-                if (currentDistance > maxDistance)
+                if (currentDistance > maxDistance) //Busca el punto más lejano para ir hacia él
                 {
                     maxDistance = currentDistance;
                     selectedDirection = currentDirection;
@@ -219,6 +229,7 @@ public class FlockUnit : MonoBehaviour
         return selectedDirection.normalized;
     }
 
+    //Comprueba si el agente vecino está en el ángulo de visión del agente
     private bool IsInFOV(Vector3 position)
     {
         return Vector3.Angle(myTransform.forward, position - myTransform.position) <= FOVAngle;

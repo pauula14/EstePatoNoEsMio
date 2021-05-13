@@ -1596,20 +1596,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flockUnitPrefab: {fileID: 7240394317500157493, guid: 12933d5cc4926cd469d6565e15ea46cf,
     type: 3}
-  flockSize: 3
-  spawnBounds: {x: 50, y: 0, z: 50}
+  flockSize: 20
   _minSpeed: 2
   _maxSpeed: 4
-  _cohesionDistance: 0.63
-  _avoidanceDistance: 0.82
-  _aligementDistance: 1.03
-  _obstacleDistance: 1.06
-  _boundsDistance: 14.7
-  _cohesionWeight: 0.56
-  _avoidanceWeight: 0.42
-  _aligementWeight: 1.21
-  _boundsWeight: 1.14
-  _obstacleWeight: 14.1
+  _cohesionDistance: 2.61
+  _avoidanceDistance: 1
+  _aligementDistance: 3.74
+  _obstacleDistance: 1
+  _boundsDistance: 45.3
+  _cohesionWeight: 3.88
+  _avoidanceWeight: 0.69
+  _aligementWeight: 5.11
+  _boundsWeight: 1
+  _obstacleWeight: 1
 --- !u!4 &1468660172
 Transform:
   m_ObjectHideFlags: 0
@@ -1618,7 +1617,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1468660170}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.17903, y: 9.265587, z: -25.038843}
+  m_LocalPosition: {x: 2, y: 9.265587, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

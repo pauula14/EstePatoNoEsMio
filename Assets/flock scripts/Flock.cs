@@ -7,7 +7,8 @@ public class Flock : MonoBehaviour
     [Header("Spawn Setup")]
     [SerializeField] private FlockUnit flockUnitPrefab;
     [SerializeField] private int flockSize;
-    [SerializeField] private Vector3 spawnBounds;
+    //[SerializeField] private Vector3 spawnBounds;
+    private Vector3 spawnBounds = new Vector3(50f, 0, 50f);
 
     [Header("Speed Setup")]
     [Range(0, 10)]
@@ -22,23 +23,23 @@ public class Flock : MonoBehaviour
 
     [Range(0, 10)]
     [SerializeField] private float _cohesionDistance;
-    public float cohesionDistance { get { return _cohesionDistance; } }
+    public float CohesionDistance { get { return _cohesionDistance; } }
 
     [Range(0, 10)]
     [SerializeField] private float _avoidanceDistance;
-    public float avoidanceDistance { get { return _avoidanceDistance; } }
+    public float AvoidanceDistance { get { return _avoidanceDistance; } }
 
     [Range(0, 10)]
-    [SerializeField] private float _aligementDistance;
-    public float aligementDistance { get { return _aligementDistance; } }
+    [SerializeField] private float _aligementDistance; //Cuanto mayor, más formación "ejército" será
+    public float AligementDistance { get { return _aligementDistance; } }
 
     [Range(0, 10)]
     [SerializeField] private float _obstacleDistance;
-    public float obstacleDistance { get { return _obstacleDistance; } }
+    public float ObstacleDistance { get { return _obstacleDistance; } }
 
     [Range(0, 100)]
-    [SerializeField] private float _boundsDistance;
-    public float boundsDistance { get { return _boundsDistance; } }
+    [SerializeField] private float _boundsDistance; //Distancia al centro - radio en el que se moverán
+    public float BoundsDistance { get { return _boundsDistance; } }
 
 
     [Header("Behaviour Weights")]
@@ -48,11 +49,11 @@ public class Flock : MonoBehaviour
     public float cohesionWeight { get { return _cohesionWeight; } }
 
     [Range(0, 10)]
-    [SerializeField] private float _avoidanceWeight;
+    [SerializeField] private float _avoidanceWeight; //Cuanto mayor más lejos iran entre sí
     public float avoidanceWeight { get { return _avoidanceWeight; } }
 
     [Range(0, 10)]
-    [SerializeField] private float _aligementWeight;
+    [SerializeField] private float _aligementWeight; //Cuanto mayor menos habrá por horda
     public float aligementWeight { get { return _aligementWeight; } }
 
     [Range(0, 10)]
@@ -87,6 +88,7 @@ public class Flock : MonoBehaviour
             randomVector = new Vector3(randomVector.x * spawnBounds.x, randomVector.y * spawnBounds.y, randomVector.z * spawnBounds.z);
             var spawnPosition = new Vector3(transform.position.x + randomVector.x, 1, transform.position.z + randomVector.z);
             var rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
+
             allUnits[i] = Instantiate(flockUnitPrefab, spawnPosition, rotation);
             allUnits[i].AssignFlock(this);
             allUnits[i].InitializeSpeed(UnityEngine.Random.Range(minSpeed, maxSpeed));
