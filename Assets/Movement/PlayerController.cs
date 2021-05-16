@@ -31,6 +31,5 @@ public class PlayerController : MonoBehaviour
     public void OnMoveInput(float horizontal, float vertical){
         this.vertical = vertical;
         this.horizontal = horizontal;
-           Debug.Log($"PlayerController Move Input: {vertical},{horizontal}");
     }
 }
