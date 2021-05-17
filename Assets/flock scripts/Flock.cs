@@ -143,7 +143,7 @@ public class Flock : MonoBehaviour
     {
         var numberNewAgents = 0;
 
-        for (int i = 0; i < newAgents.Count; i++)
+        for (int i = 0; i < newAgents.Length; i++)
         {
             if (newAgents[i] != null)
             {

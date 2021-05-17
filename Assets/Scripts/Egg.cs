@@ -7,7 +7,7 @@ public class Egg : MonoBehaviour
 
     public int numDucks;
     private Vector3 position;
-    private bool activeInstantiateDucks = true;
+    //private bool activeInstantiateDucks = true;
     [SerializeField] private Flock flockScript;
 
 
