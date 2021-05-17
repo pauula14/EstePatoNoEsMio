@@ -18,8 +18,10 @@ public class RandomMovement : MonoBehaviour
     public int damage;
     public bool dead;
 
+
     public bool killed = false;
     //public GameObject radgoll;
+
 
     void Start()
     {

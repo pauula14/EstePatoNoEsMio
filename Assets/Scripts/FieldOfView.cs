@@ -5,10 +5,7 @@ using UnityEngine.AI;
 
 public class FieldOfView : MonoBehaviour
 {
-    //prueba
-    public float randomXpos = 0;
-    public float randomZpos = 0;
-    public UnityEngine.AI.NavMeshAgent cuteDuck;
+
 
     public float viewRadius;
 
@@ -48,14 +45,6 @@ public class FieldOfView : MonoBehaviour
         }
     }*/
 
-    //prueba
-    void SetTarget()
-    {
-        randomXpos = Random.Range(50, -40);
-        randomZpos = Random.Range(50, -40);
-
-        cuteDuck.SetDestination(new Vector3(randomXpos, cuteDuck.transform.position.y, randomZpos));
-    }
 
     //Detecta los obtaculos y pinta la vista, hacer para la mdre y en lugar de para obstaculos usar este para las hordas (detectaria a cada patete de la horda)
     public void DrawFieldOfView()

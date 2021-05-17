@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlockUnit : MonoBehaviour
+public class FlockAgent : MonoBehaviour
 {
     [SerializeField] private float FOVAngle;
     [SerializeField] private float smoothDamp;
@@ -10,9 +10,9 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] private Vector3[] directionsToCheckWhenAvoidingObstacles; //Direcciones que compruba cuando se choca probablmente no haga falta
 
 
-    private List<FlockUnit> cohesionNeighbours = new List<FlockUnit>();
-    private List<FlockUnit> avoidanceNeighbours = new List<FlockUnit>();
-    private List<FlockUnit> aligementNeighbours = new List<FlockUnit>();
+    private List<FlockAgent> cohesionNeighbours = new List<FlockAgent>();
+    private List<FlockAgent> avoidanceNeighbours = new List<FlockAgent>();
+    private List<FlockAgent> aligementNeighbours = new List<FlockAgent>();
     private Flock assignedFlock;
     private Vector3 currentVelocity;
     private Vector3 currentObstacleAvoidanceVector;
@@ -22,7 +22,7 @@ public class FlockUnit : MonoBehaviour
 
     private void Awake()
     {
-        myTransform = transform;
+        myTransform = transform; //Ahorra complejidad computacional
     }
 
     public void AssignFlock(Flock flock)
@@ -63,7 +63,7 @@ public class FlockUnit : MonoBehaviour
         cohesionNeighbours.Clear();
         avoidanceNeighbours.Clear();
         aligementNeighbours.Clear();
-        var allUnits = assignedFlock.allUnits;
+        var allUnits = assignedFlock.allAgents;
         for (int i = 0; i < allUnits.Length; i++)
         {
             var currentAgent = allUnits[i];

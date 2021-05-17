@@ -5,7 +5,7 @@ using UnityEngine;
 public class Flock : MonoBehaviour
 {
     [Header("Spawn Setup")]
-    [SerializeField] private FlockUnit flockUnitPrefab;
+    [SerializeField] private FlockAgent flockUnitPrefab;
     [SerializeField] private int flockSize;
     //[SerializeField] private Vector3 spawnBounds;
     private Vector3 spawnBounds = new Vector3(50f, 0, 50f);
@@ -19,14 +19,14 @@ public class Flock : MonoBehaviour
     public float maxSpeed { get { return _maxSpeed; } }
 
 
-    [Header("Detection Distances")]
+    [Header("Detection Distances")] //distancias a las que se detectan entre ellos en los distintos comportamientos
 
     [Range(0, 10)]
     [SerializeField] private float _cohesionDistance;
     public float CohesionDistance { get { return _cohesionDistance; } }
 
     [Range(0, 10)]
-    [SerializeField] private float _avoidanceDistance;
+    [SerializeField] private float _avoidanceDistance; //Cuanto mayor, más lejos estarán uno de otros
     public float AvoidanceDistance { get { return _avoidanceDistance; } }
 
     [Range(0, 10)]
@@ -42,7 +42,7 @@ public class Flock : MonoBehaviour
     public float BoundsDistance { get { return _boundsDistance; } }
 
 
-    [Header("Behaviour Weights")]
+    [Header("Behaviour Weights")] //"peso" de cada comortamiento, a mayor peso, mayor prioridad
 
     [Range(0, 10)]
     [SerializeField] private float _cohesionWeight;
@@ -64,24 +64,35 @@ public class Flock : MonoBehaviour
     [SerializeField] private float _obstacleWeight;
     public float obstacleWeight { get { return _obstacleWeight; } }
 
-    public FlockUnit[] allUnits { get; set; }
+    public FlockAgent[] allAgents { get; set; }
+    //public FlockAgent[] newAgents { get; set; }
+    public FlockAgent[] newAgents;
+    //public List <FlockAgent> newAgents;
+    //public List<int> hol;
+
+
 
     private void Start()
     {
-        GenerateUnits();
+        GenerateAgents(); //Genera los agentes del comoprtamiento por defecto
     }
 
     private void Update()
     {
-        for (int i = 0; i < allUnits.Length; i++)
+        for (int i = 0; i < allAgents.Length; i++)
         {
-            allUnits[i].MoveUnit();
+            allAgents[i].MoveUnit();
+        }
+
+        for (int i = 0; i < newAgents.Length; i++)
+        {
+            newAgents[i].MoveUnit();
         }
     }
 
-    private void GenerateUnits()
+    private void GenerateAgents()
     {
-        allUnits = new FlockUnit[flockSize];
+        allAgents = new FlockAgent[flockSize];
         for (int i = 0; i < flockSize; i++)
         {
             var randomVector = UnityEngine.Random.insideUnitSphere;
@@ -89,9 +100,57 @@ public class Flock : MonoBehaviour
             var spawnPosition = new Vector3(transform.position.x + randomVector.x, 1, transform.position.z + randomVector.z);
             var rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
 
-            allUnits[i] = Instantiate(flockUnitPrefab, spawnPosition, rotation);
-            allUnits[i].AssignFlock(this);
-            allUnits[i].InitializeSpeed(UnityEngine.Random.Range(minSpeed, maxSpeed));
+            allAgents[i] = Instantiate(flockUnitPrefab, spawnPosition, rotation);
+            allAgents[i].AssignFlock(this);
+            allAgents[i].InitializeSpeed(UnityEngine.Random.Range(minSpeed, maxSpeed));
         }
+    }
+
+    public void GenerateNewAgents(int number, Vector3 position)
+    {
+        //newAgents = new FlockAgent[number];
+        var nuevosAgentes = CountNewAgents();
+        Debug.Log("numero Agentes: " + nuevosAgentes);
+        Debug.Log("nuevos Agentes: " + number);
+        Debug.Log("Length: " + newAgents.Length);
+        //var actualSize = newAgents.Length;
+        //newAgents.Add(new FlockAgent[number]);
+        Debug.Log("generando");
+
+                 
+         for (int i = newAgents.Length; i < newAgents.Length + number; i++)
+         {
+             Debug.Log("nuevo Agente: " + i);
+
+             var randomPosition = Random.Range(0, 3);
+             var spawnPosition = new Vector3(position.x + randomPosition, 1, position.z + randomPosition);
+             var rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
+
+             FlockAgent newAgent = Instantiate(flockUnitPrefab, spawnPosition, rotation);
+            newAgents[i] = newAgent;
+            newAgent.AssignFlock(this);
+            newAgent.InitializeSpeed(UnityEngine.Random.Range(minSpeed, maxSpeed));
+
+           //newAgents.Add(newAgent);
+
+             Debug.Log("nuevo Agente: " + i);
+        }
+
+         
+    }
+
+    public int CountNewAgents()
+    {
+        var numberNewAgents = 0;
+
+        for (int i = 0; i < newAgents.Count; i++)
+        {
+            if (newAgents[i] != null)
+            {
+                numberNewAgents++;
+            }
+        }
+
+        return numberNewAgents;
     }
 }
