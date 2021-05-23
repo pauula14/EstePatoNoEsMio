@@ -6,27 +6,36 @@ public class Egg : MonoBehaviour
 {
 
     public int numDucks;
+    public int time;
     private Vector3 position;
-    //private bool activeInstantiateDucks = true;
-    [SerializeField] private Flock flockScript;
+    private bool activeInstantiateDucks = true;
+    [SerializeField] public Flock flockScript;
 
-
-    public FlockAgent[] newAgents { get; set; }
 
     void Start()
     {
-        Debug.Log("quiero generar");
         numDucks = Random.Range(1, 4);
+        time = Random.Range(0, 14);
         position = transform.position;
-
-        flockScript.GenerateNewAgents(numDucks, position);
     }
 
 
     void Update()
     {
-        
+        if ((Time.fixedTime > time) && (activeInstantiateDucks))
+        {         
+            InstantiateDucks();
+        }
     }
 
+    void InstantiateDucks()
+    {
+        if (activeInstantiateDucks)
+        {
+            //Debug.Log("quiero generar");
+            activeInstantiateDucks = false;
+            flockScript.GenerateNewAgents(numDucks, position);
+        }
+    }
     
 }

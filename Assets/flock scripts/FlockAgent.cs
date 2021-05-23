@@ -14,15 +14,33 @@ public class FlockAgent : MonoBehaviour
     private List<FlockAgent> avoidanceNeighbours = new List<FlockAgent>();
     private List<FlockAgent> aligementNeighbours = new List<FlockAgent>();
     private Flock assignedFlock;
-    private Vector3 currentVelocity;
+    public Vector3 currentVelocity;
     private Vector3 currentObstacleAvoidanceVector;
-    private float speed;
+    public float speed;
+
+    private float timeObstacle;
+    public Vector3 positionObstacle;
+    private bool obstacle = false;
 
     public Transform myTransform { get; set; }
 
     private void Awake()
     {
         myTransform = transform; //Ahorra complejidad computacional
+    }
+
+    private void Update()
+    {
+        if (obstacle)
+        {
+            if (/*(Time.fixedTime > timeObstacle + 5) &&*/ (currentVelocity.y < 0.1))
+            {
+                obstacle = false;
+                Debug.Log("me voltio");
+                myTransform.rotation = Quaternion.Euler(myTransform.rotation.x, myTransform.rotation.y+80f, myTransform.rotation.z);
+            }
+        }
+        
     }
 
     public void AssignFlock(Flock flock)
@@ -182,6 +200,9 @@ public class FlockAgent : MonoBehaviour
         if (Physics.Raycast(myTransform.position, myTransform.forward, out hit, assignedFlock.ObstacleDistance, obstacleMask))
         {
             obstacleVector = FindBestDirectionToAvoidObstacle();
+            timeObstacle = Time.fixedTime;
+            obstacle = true;
+            positionObstacle = myTransform.position;
         }
         else
         {
@@ -225,7 +246,10 @@ public class FlockAgent : MonoBehaviour
                 currentObstacleAvoidanceVector = currentDirection.normalized;
                 return selectedDirection.normalized;
             }
+
+            
         }
+    
         return selectedDirection.normalized;
     }
 
