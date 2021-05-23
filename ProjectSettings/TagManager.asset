@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Goal
   - Mother
+  - Ground
+  - Flock
+  - Lake
   layers:
   - Default
   - TransparentFX

@@ -4,23 +4,22 @@ using UnityEngine;
 
 public class FlockAgent : MonoBehaviour
 {
-    [SerializeField] private float FOVAngle;
+    [SerializeField] private float FOVAngle; //ánfulo de visión
     [SerializeField] private float smoothDamp;
     [SerializeField] private LayerMask obstacleMask;
-    [SerializeField] private Vector3[] directionsToCheckWhenAvoidingObstacles; //Direcciones que compruba cuando se choca probablmente no haga falta
+    [SerializeField] private Vector3[] directionsToCheckWhenAvoidingObstacles; //Direcciones que comprueba cuando se choca probablmente no haga falta
 
-
+    //Listas con los vecinos de cada comportamiento
     private List<FlockAgent> cohesionNeighbours = new List<FlockAgent>();
     private List<FlockAgent> avoidanceNeighbours = new List<FlockAgent>();
     private List<FlockAgent> aligementNeighbours = new List<FlockAgent>();
-    private Flock assignedFlock;
-    public Vector3 currentVelocity;
-    private Vector3 currentObstacleAvoidanceVector;
-    public float speed;
 
-    private float timeObstacle;
-    public Vector3 positionObstacle;
-    private bool obstacle = false;
+    private Flock assignedFlock; //Script de flock
+    public Vector3 currentVelocity; //Velocidad actual
+    private Vector3 currentObstacleAvoidanceVector; //Vector para esquivar al obstáculo
+    public float speed; //Velocidad que se aplicará
+
+    private bool obstacle = false; //Si ha chocado contra un obstáculo
 
     public Transform myTransform { get; set; }
 
@@ -31,9 +30,9 @@ public class FlockAgent : MonoBehaviour
 
     private void Update()
     {
-        if (obstacle)
+        if (obstacle) //Si ha chocado con un obstáculo y está parado o va muy lento, gira para evitar quedarse atascado
         {
-            if (/*(Time.fixedTime > timeObstacle + 5) &&*/ (currentVelocity.y < 0.1))
+            if ((currentVelocity.y < 0.5))
             {
                 obstacle = false;
                 Debug.Log("me voltio");
@@ -43,17 +42,17 @@ public class FlockAgent : MonoBehaviour
         
     }
 
-    public void AssignFlock(Flock flock)
+    public void AssignFlock(Flock flock) //Asigna el script
     {
         assignedFlock = flock;
     }
 
-    public void InitializeSpeed(float speed)
+    public void InitializeSpeed(float speed) //Inicializa la velocidad
     {
-        this.speed = speed;
+        this.speed = speed; 
     }
 
-    public void MoveUnit()
+    public void MoveUnit() //Mueve al agente con los 3 comportamientos, añadiendo la distancia al centro y los obstáculos
     {
         FindNeighbours();
         CalculateSpeed();
@@ -68,14 +67,16 @@ public class FlockAgent : MonoBehaviour
         moveVector = Vector3.SmoothDamp(myTransform.forward, moveVector, ref currentVelocity, smoothDamp);
         moveVector = moveVector.normalized * speed;
         if (moveVector == Vector3.zero)
+        {
             moveVector = transform.forward;
-
+        }
+        
         myTransform.forward = moveVector;
         myTransform.position += moveVector * Time.deltaTime;
     }
 
 
-
+    //Busca los vecinos del agente para cada uno de los comportamientos en función de los parámetros establecidos en el agente
     private void FindNeighbours()
     {
         cohesionNeighbours.Clear();
@@ -106,6 +107,7 @@ public class FlockAgent : MonoBehaviour
         }
     }
 
+    //Le da velocidad al agente
     private void CalculateSpeed()
     {
         if (cohesionNeighbours.Count == 0)
@@ -124,6 +126,7 @@ public class FlockAgent : MonoBehaviour
         speed = Mathf.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed); //Comprueba que la velocidad esté dentro dle rango
     }
 
+    //Calcula el vector de cohesión que se va a utilizar para generar el movimiento del agente
     private Vector3 CalculateCohesionVector()
     {
         var cohesionVector = Vector3.zero;
@@ -145,6 +148,7 @@ public class FlockAgent : MonoBehaviour
         return new Vector3(cohesionVector.x, 0, cohesionVector.z);
     }
 
+    //Calcula el vector de alineación que se va a utilizar para generar el movimiento del agente
     private Vector3 CalculateAligementVector()
     {
         var aligementVector = myTransform.forward;
@@ -165,6 +169,7 @@ public class FlockAgent : MonoBehaviour
         return new Vector3(aligementVector.x, 0, aligementVector.z);
     }
 
+    //Calcula el vector de esquivación que se va a utilizar para generar el movimiento del agente
     private Vector3 CalculateAvoidanceVector()
     {
         var avoidanceVector = Vector3.zero;
@@ -193,6 +198,7 @@ public class FlockAgent : MonoBehaviour
         return isNearCenter ? offsetToCenter.normalized : Vector3.zero;
     }
 
+    //Calcula el vector que va a utilizar el agente para esquivar un obstáculo
     private Vector3 CalculateObstacleVector()
     {
         var obstacleVector = Vector3.zero;
@@ -200,9 +206,7 @@ public class FlockAgent : MonoBehaviour
         if (Physics.Raycast(myTransform.position, myTransform.forward, out hit, assignedFlock.ObstacleDistance, obstacleMask))
         {
             obstacleVector = FindBestDirectionToAvoidObstacle();
-            timeObstacle = Time.fixedTime;
             obstacle = true;
-            positionObstacle = myTransform.position;
         }
         else
         {
@@ -211,6 +215,7 @@ public class FlockAgent : MonoBehaviour
         return new Vector3(obstacleVector.x, 0, obstacleVector.z);
     }
 
+    //Busca, con 8 posibles posiciones la mejor para evitar un obstáculo
     private Vector3 FindBestDirectionToAvoidObstacle()
     {
         if (currentObstacleAvoidanceVector != Vector3.zero)
@@ -225,7 +230,7 @@ public class FlockAgent : MonoBehaviour
         float maxDistance = int.MinValue;
         var selectedDirection = Vector3.zero;
 
-        for (int i = 0; i < directionsToCheckWhenAvoidingObstacles.Length; i++)
+        for (int i = 0; i < directionsToCheckWhenAvoidingObstacles.Length; i++) //Va escogiendo la más lejana al obstáculo de las dadas
         {
 
             RaycastHit hit;

@@ -74,6 +74,7 @@ public class Flock : MonoBehaviour
         GenerateAgents(); //Genera los agentes del comoprtamiento por defecto
     }
 
+    //Se les da el movimiento a todos los agentes creados
     private void Update()
     {
         for (int i = 0; i < allAgents.Length; i++)
@@ -91,6 +92,7 @@ public class Flock : MonoBehaviour
         
     }
 
+    //Genera los agentes iniciales que van a etsra en el mapa
     private void GenerateAgents()
     {
         allAgents = new FlockAgent[flockSize];
@@ -107,50 +109,34 @@ public class Flock : MonoBehaviour
         }
     }
 
+    //Genera los nuevos agentes que nacen de los huevos
     public void GenerateNewAgents(int number, Vector3 position)
     {
 
         if (!generatedNewAgents)
         {
-            newAgents = new FlockAgent[100];
+            newAgents = new FlockAgent[500];
         }
 
-        //Debug.Log("Hola");
-        //newAgents = new FlockAgent[number];
         var nuevosAgentes = CountNewAgents();
         generatedNewAgents = true;
-
-        Debug.Log("numero Agentes: " + nuevosAgentes);
-        Debug.Log("nuevos Agentes: " + number);
-        //Debug.Log("Length: " + newAgents.Length);
-        //var actualSize = newAgents.Length;
-        //newAgents.Add(new FlockAgent[number]);
-        //Debug.Log("generando");
-
-                 
+      
          for (int i = nuevosAgentes; i < nuevosAgentes+number; i++)
          {
-             //Debug.Log("nuevo Agente: " + i);
-
              var randomPosition = Random.Range(0, 3);
              var spawnPosition = new Vector3(position.x + randomPosition, 1, position.z + randomPosition);
              var rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
 
-            //FlockAgent newAgent = new FlockAgent();
             newAgents[i] = Instantiate(flockUnitPrefab, spawnPosition, rotation);
             newAgents[i].AssignFlock(this);
             newAgents[i].InitializeSpeed(UnityEngine.Random.Range(minSpeed, maxSpeed));
-            
-            //agentitos.Add(newAgent);
 
-            //newAgents.Add(newAgent);
-
-            Debug.Log("nuevo Agente: " + i);
         }
 
          
     }
 
+    //Devuelve el número de nuevos agentes que hay
     public int CountNewAgents()
     {
         var numberNewAgents = 0;
@@ -165,8 +151,6 @@ public class Flock : MonoBehaviour
                 }
             }
         }
-        
-
         return numberNewAgents;
     }
 }
