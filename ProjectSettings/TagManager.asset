@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - Flock
   - Lake
+  - FlockAgent
   layers:
   - Default
   - TransparentFX

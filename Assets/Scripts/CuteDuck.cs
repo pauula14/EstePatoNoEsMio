@@ -14,6 +14,7 @@ public class CuteDuck : MonoBehaviour
         public GameObject goalDestination; //Este game object es la meta que perseguirá cada patito bueno
         private bool IsMotherDefined = false; //true o false en función de si encuentra a la madre o no
         private bool LakeDetected = false;
+    private float lakeDetectedTime;
     #endregion
 
     #region Variables Movimiento Random - Pathfinding
@@ -72,6 +73,11 @@ public class CuteDuck : MonoBehaviour
                     SetTarget(); 
                 }
         }
+
+        if ((LakeDetected) && (Time.realtimeSinceStartup >= lakeDetectedTime))
+        {
+            LakeDetected = false;
+        }
     }
 
     //Pone como meta a la madre, de forma que ahora le seguirá siempre, ya no hará pathfinding
@@ -82,7 +88,6 @@ public class CuteDuck : MonoBehaviour
             motherScript.SetLives();
         }
 
-        LakeDetected = false;
         IsMotherDefined = true;
     }
 
@@ -113,9 +118,12 @@ public class CuteDuck : MonoBehaviour
                 {
                     if (newViewCast.type == 1) //Si ha entrado la madre en el campo de visión
                     {
+                    if (!LakeDetected) //Si no ha pasado el tiempo suficiente desde la colisión, no puede seguir a la madre
+                    {
                         Debug.Log("mother");
-                        LakeDetected = false;
                         setGoalToMother();
+                    }
+                        
                     }
                     else if (newViewCast.type == 2) //Si el objeto del campo de visión es un obstácilo
                     {
@@ -190,6 +198,7 @@ public class CuteDuck : MonoBehaviour
                 transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y + 180f, transform.rotation.z);
                 SetTarget();
                 LakeDetected = true;
+                lakeDetectedTime = Time.realtimeSinceStartup + 5;
                 IsMotherDefined = false;         
         }
     }
@@ -214,4 +223,6 @@ public class CuteDuck : MonoBehaviour
         }
 
     #endregion
+
+    
 }

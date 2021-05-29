@@ -7,6 +7,7 @@ public class FlockAgent : MonoBehaviour
     [SerializeField] private float FOVAngle; //ánfulo de visión
     [SerializeField] private float smoothDamp;
     [SerializeField] private LayerMask obstacleMask;
+    [SerializeField] private LayerMask motherMask;
     [SerializeField] private Vector3[] directionsToCheckWhenAvoidingObstacles; //Direcciones que comprueba cuando se choca probablmente no haga falta
 
     //Listas con los vecinos de cada comportamiento
@@ -62,6 +63,7 @@ public class FlockAgent : MonoBehaviour
         var aligementVector = CalculateAligementVector() * assignedFlock.aligementWeight;
         var boundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
         var obstacleVector = CalculateObstacleVector() * assignedFlock.obstacleWeight;
+        DetectMother();
 
         var moveVector = cohesionVector + avoidanceVector + aligementVector + boundsVector + obstacleVector;
         moveVector = Vector3.SmoothDamp(myTransform.forward, moveVector, ref currentVelocity, smoothDamp);
@@ -102,12 +104,13 @@ public class FlockAgent : MonoBehaviour
                 if (currentNeighbourDistanceSqr <= assignedFlock.AligementDistance * assignedFlock.AligementDistance)
                 {
                     aligementNeighbours.Add(currentAgent);
+        
                 }
             }
         }
     }
 
-    //Le da velocidad al agente
+    //Le da velocidad al agente, se adaptan a la velocidad de sus vecinos
     private void CalculateSpeed()
     {
         if (cohesionNeighbours.Count == 0)
@@ -123,7 +126,18 @@ public class FlockAgent : MonoBehaviour
         }
 
         speed /= cohesionNeighbours.Count; //Se normaliza la velocidad
-        speed = Mathf.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed); //Comprueba que la velocidad esté dentro dle rango
+
+        if (cohesionNeighbours.Count < 5)
+        {
+            Debug.Log("menos de cinco");
+            speed = Mathf.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed-1); //Comprueba que la velocidad esté dentro dle rango
+        }
+        else
+        {
+            Debug.Log("mas de cinco");
+            speed = assignedFlock.maxSpeed+1;
+        }
+        
     }
 
     //Calcula el vector de cohesión que se va a utilizar para generar el movimiento del agente
@@ -213,6 +227,17 @@ public class FlockAgent : MonoBehaviour
             currentObstacleAvoidanceVector = Vector3.zero;
         }
         return new Vector3(obstacleVector.x, 0, obstacleVector.z);
+    }
+
+    //Aumenta la velocidad si detecta a la madre
+    private void DetectMother()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(myTransform.position, myTransform.forward, out hit, assignedFlock.MotherDistance, motherMask))
+        {
+            Debug.Log("puta madre");
+        }
+        
     }
 
     //Busca, con 8 posibles posiciones la mejor para evitar un obstáculo

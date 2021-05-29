@@ -37,6 +37,10 @@ public class Flock : MonoBehaviour
     [SerializeField] private float _obstacleDistance;
     public float ObstacleDistance { get { return _obstacleDistance; } }
 
+    [Range(0, 10)]
+    [SerializeField] private float _motherDistance;
+    public float MotherDistance { get { return _motherDistance; } }
+
     [Range(0, 100)]
     [SerializeField] private float _boundsDistance; //Distancia al centro - radio en el que se moverán
     public float BoundsDistance { get { return _boundsDistance; } }

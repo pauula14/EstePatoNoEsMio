@@ -23,4 +23,17 @@ public class Mother : MonoBehaviour
     {
         lives++;
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "FlockAgent")
+        {
+            lives--;
+
+            if (lives == 0)
+            {
+                Debug.Log("Game Over");
+            }
+        }
+    }
 }

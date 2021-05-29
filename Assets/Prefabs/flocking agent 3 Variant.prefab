@@ -122,6 +122,11 @@ PrefabInstance:
       propertyPath: directionsToCheckWhenAvoidingObstacles.Array.data[7].x
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 7240394317500157493, guid: 12933d5cc4926cd469d6565e15ea46cf,
+        type: 3}
+      propertyPath: motherMask.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 8664307400147175093, guid: 12933d5cc4926cd469d6565e15ea46cf,
         type: 3}
       propertyPath: m_Name
