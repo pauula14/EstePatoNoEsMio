@@ -333,3 +333,4 @@ MonoBehaviour:
   - {x: 0, y: 0, z: -1}
   currentVelocity: {x: 0, y: 0, z: 0}
   speed: 0
+  navMesh: {fileID: 4166944872100075864}

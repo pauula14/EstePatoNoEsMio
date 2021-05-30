@@ -7,21 +7,24 @@ public class Mother : MonoBehaviour
 
     public int lives = 1;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
+
     void Update()
     {
-        
+        if (lives == 0)
+        {
+            Debug.Log("Game Over");
+        }
     }
 
-    public void SetLives ()
+    public void IncrementLives ()
     {
         lives++;
+    }
+
+    public void DecrementLives()
+    {
+        lives--;
     }
 
     private void OnCollisionEnter(Collision collision)

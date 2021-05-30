@@ -65,13 +65,23 @@ public class CuteDuck : MonoBehaviour
         }
         else //Realiza movimiento pathfinding si no ha encontrado a la madre
         {
-            nextPosition = new Vector3(randomXpos, transform.position.y, randomZpos);
-            navMeshAgent.SetDestination(nextPosition);
+            if (!LakeDetected)
+            {
+                nextPosition = new Vector3(randomXpos, transform.position.y, randomZpos);
+                navMeshAgent.SetDestination(nextPosition);
 
-            if (transform.position == nextPosition) //Si ya ha llegado a la posición meta, calcula la nueva
+                if (transform.position == nextPosition) //Si ya ha llegado a la posición meta, calcula la nueva
                 {
-                    SetTarget(); 
+                    SetTarget();
                 }
+            }
+            else
+            {
+                if (IsMotherDefined)
+                {
+                    navMeshAgent.SetDestination(navMeshAgent.transform.position);
+                }              
+            }          
         }
 
         if ((LakeDetected) && (Time.realtimeSinceStartup >= lakeDetectedTime))
@@ -85,7 +95,7 @@ public class CuteDuck : MonoBehaviour
     {
         if (!IsMotherDefined)
         {
-            motherScript.SetLives();
+            motherScript.IncrementLives();
         }
 
         IsMotherDefined = true;
@@ -118,16 +128,14 @@ public class CuteDuck : MonoBehaviour
                 {
                     if (newViewCast.type == 1) //Si ha entrado la madre en el campo de visión
                     {
-                    if (!LakeDetected) //Si no ha pasado el tiempo suficiente desde la colisión, no puede seguir a la madre
-                    {
-                        Debug.Log("mother");
-                        setGoalToMother();
-                    }
-                        
+                        if (!LakeDetected) //Si no ha pasado el tiempo suficiente desde la colisión, no puede seguir a la madre
+                        {
+                            setGoalToMother();
+                        }
                     }
                     else if (newViewCast.type == 2) //Si el objeto del campo de visión es un obstácilo
                     {
-                        Debug.Log("obstaculo");
+                        
                     }
                 }
             }
@@ -188,17 +196,20 @@ public class CuteDuck : MonoBehaviour
             }
         }
 
-    public void OnTriggerEnter(Collider collision)//Si pasa por un lago, deja de seguir a la madre y esta pierde una vida
+    public void OnTriggerEnter(Collider collision)//Si pasa por un lago, se queda quieto y deja de seguir a la madre, esta pierde una vida
     {
         if (collision.gameObject.tag == "Lake")
         {
-            Debug.Log("lagho");
-
-                Debug.Log("Girar");
                 transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y + 180f, transform.rotation.z);
                 SetTarget();
+
+                if (IsMotherDefined)
+                {
+                    motherScript.DecrementLives();
+                }
+
                 LakeDetected = true;
-                lakeDetectedTime = Time.realtimeSinceStartup + 5;
+                lakeDetectedTime = Time.realtimeSinceStartup + 3;
                 IsMotherDefined = false;         
         }
     }

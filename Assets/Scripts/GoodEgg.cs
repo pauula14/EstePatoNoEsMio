@@ -23,15 +23,16 @@ public class GoodEgg : MonoBehaviour
         positionEgg = transform.position;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        if ((Time.fixedTime > timeToGen) && (activeInstantiateDucks))
+        if ((Time.fixedTime > timeToGen) && (activeInstantiateDucks)) //Si ha pasado el tiempo, se llama a instanciar el pato
         {
             InstantiateDucks();
         }
     }
 
+    //Intsnacia el patito y destruye el huevo del que ha salido. El pato se instancia en el mismo lugar donde ha aparecido el huevo
     void InstantiateDucks()
     {
         if (activeInstantiateDucks)

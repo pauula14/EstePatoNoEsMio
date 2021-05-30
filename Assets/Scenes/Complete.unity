@@ -3875,7 +3875,7 @@ MonoBehaviour:
   _avoidanceDistance: 1.28
   _aligementDistance: 4.46
   _obstacleDistance: 9.56
-  _motherDistance: 3.33
+  _motherDistance: 4.25
   _boundsDistance: 42.9
   _cohesionWeight: 4.18
   _avoidanceWeight: 5.11
