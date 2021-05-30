@@ -13,7 +13,7 @@ public class Mother : MonoBehaviour
     {
         if (lives == 0)
         {
-            Debug.Log("Game Over");
+            GameOver();
         }
     }
 
@@ -32,11 +32,11 @@ public class Mother : MonoBehaviour
         if (collision.gameObject.tag == "FlockAgent")
         {
             lives--;
-
-            if (lives == 0)
-            {
-                Debug.Log("Game Over");
-            }
         }
+    }
+
+    private void GameOver()
+    {
+        Debug.Log("Game Over");
     }
 }
