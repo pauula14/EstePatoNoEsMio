@@ -20,6 +20,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "StickDeadzone",
                     "interactions": ""
+                },
+                {
+                    "name": "CameraSwitch",
+                    "type": "Button",
+                    "id": "2df73893-653f-472c-abf8-95ab0143c0ea",
+                    "expectedControlType": "Button",
+                    "processors": "StickDeadzone",
+                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -119,6 +127,17 @@
                     "processors": "",
                     "groups": "Keyboard and Mouse",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "084fb79f-2ed6-4ca1-b38f-08e5e8b50364",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "CameraSwitch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
