@@ -32,4 +32,6 @@ public class PlayerController : MonoBehaviour
         this.vertical = vertical;
         this.horizontal = horizontal;
     }
+
+    
 }
